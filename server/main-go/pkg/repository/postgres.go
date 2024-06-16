@@ -15,11 +15,9 @@ type Config struct {
 }
 
 const (
-	usersTable      = "users"
-	todoListsTable  = "todo_lists"
-	usersListsTable = "users_lists"
-	todoItemsTable  = "todo_items"
-	listsItemsTable = "lists_items"
+	usersTable    = "users"
+	chatsTable    = "chats"
+	messagesTable = "messages"
 )
 
 func NewPostgresDB(cfg Config) (*sqlx.DB, error) {
@@ -29,10 +27,49 @@ func NewPostgresDB(cfg Config) (*sqlx.DB, error) {
 		return nil, err
 	}
 
+	if err := AddTables(db); err != nil {
+		return nil, err
+	}
+
 	err = db.Ping()
 	if err != nil {
 		return nil, err
 	}
 
 	return db, nil
+}
+
+func AddTables(db *sqlx.DB) error {
+	query := fmt.Sprintf("CREATE TABLE IF NOT EXISTS %s("+
+		"id uuid, "+
+		"username text, "+
+		"email text, "+
+		"password_hash text, "+
+		")", usersTable)
+	_, err := db.Exec(query)
+	if err != nil {
+		return err
+	}
+	query = fmt.Sprintf("CREATE TABLE IF NOT EXISTS %s("+
+		"id uuid, "+
+		"type text, "+
+		"title text, "+
+		"user_id uuid, "+
+		")", chatsTable)
+	_, err = db.Exec(query)
+	if err != nil {
+		return err
+	}
+	query = fmt.Sprintf("CREATE TABLE IF NOT EXISTS %s("+
+		"id uuid, "+
+		"text, "+
+		"isAI bool, "+
+		"id_chat uuid"+
+		")", messagesTable)
+	_, err = db.Exec(query)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

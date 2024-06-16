@@ -18,27 +18,27 @@ func (h *Handler) InitRoutes() *gin.Engine {
 
 	auth := router.Group("/auth")
 	{
-		auth.POST("/sign-up")
-		auth.POST("/sign-in")
-		auth.GET("/sign-out")
+		auth.POST("/sign-up", h.SignUp)
+		auth.POST("/sign-in", h.SignIn)
+		auth.GET("/sign-out", h.SignOut)
 	}
 	user := router.Group("/user")
 	{
-		user.GET("/user-info")
-		user.PUT("/update-info")
-		user.PUT("/update-password")
-		user.GET("/avatar")
+		user.GET("/user-info", h.GetUserInfo)
+		user.PUT("/update-info", h.UpdateUserInfo)
+		user.PUT("/update-password", h.UpdatePassword)
+		user.GET("/avatar", h.ShowAvatar)
 	}
 	ai := router.Group("/ai")
 	{
-		ai.GET("/show-chats")
-		ai.GET("/show-chat")
-		ai.DELETE("/delete-chat")
+		ai.GET("/show-chats", h.ShowChats)
+		ai.GET("/show-chat", h.ShowChat)
+		ai.DELETE("/delete-chat", h.DeleteChat)
 	}
 	chat := router.Group("/chat")
 	{
-		chat.POST("/post-message")
-		chat.DELETE("/clear-chat")
+		chat.POST("/post-message", h.PostMessage)
+		chat.DELETE("/clear-chat", h.ClearChat)
 	}
 
 	return router
